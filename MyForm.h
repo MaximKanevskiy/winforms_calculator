@@ -1,4 +1,5 @@
 #pragma once
+#include <ctype.h>
 
 namespace winformstest {
 
@@ -54,9 +55,10 @@ namespace winformstest {
 	private: System::Windows::Forms::Button^ point;
 	private: System::Windows::Forms::Button^ button0;
 	private: double _firstNumber;
-	private: char _userAction;
+	private: char _userAction = ' ';
 	private: bool hasToRepeat = false;
-	private:
+	private: System::String^ firstNumber;
+	private: System::String^ secondNumber;
 	private: System::Windows::Forms::Label^ storyOutput;
 		   /// <summary>
 		/// Обязательная переменная конструктора.
@@ -395,22 +397,43 @@ namespace winformstest {
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"MyForm";
 			this->ResumeLayout(false);
-
 		}
 #pragma endregion
 	private:
-		System::Void _updateFirstNumberInStoryOutput(System::String^ firstNumber)
+		System::Void _updateStoryOutputLabel()
 		{
-			this->storyOutput->Text = System::Convert::ToString(firstNumber);
+			if (this->firstNumber && !this->secondNumber)
+			{
+				this->storyOutput->Text = firstNumber;
+			}
+
+			if (this->_userAction != ' ')
+			{
+				this->storyOutput->Text += " " + this->secondNumber;
+			}
+		}
+	private:
+		System::Void _updateNumberInStoryOutput(System::String^ number)
+		{
+			if (this->storyOutput->Text->Length == 0 || this->_userAction == ' ')
+			{
+				this->firstNumber = number;
+				this->_updateStoryOutputLabel();
+			}
+			else
+			{
+				this->secondNumber = number;
+				this->_updateStoryOutputLabel();
+			}
 		}
 	private:
 		System::Void _updateActionInStoryOutput()
 		{
 			auto action = Convert::ToString(this->_userAction);
+			auto length = this->storyOutput->Text->Length;
 
-			if (action != " ")
+			if (isalpha(this->storyOutput->Text[length - 1] && length != 0))
 			{
-				auto length = this->storyOutput->Text->Length;
 				this->storyOutput->Text->Remove(length - 1);
 				this->storyOutput->Text += action;
 			}
@@ -423,6 +446,8 @@ namespace winformstest {
 		System::Void _clearStoryOutput()
 		{
 			this->storyOutput->Text->Remove(0);
+			this->firstNumber = "";
+			this->secondNumber = "";
 		}
 	private: 
 		System::Void _numberButtonClicked(System::Object^ sender, System::EventArgs^ e) 
@@ -446,7 +471,7 @@ namespace winformstest {
 				this->iolabel->Text += button->Text;
 			}
 			
-			this->_updateFirstNumberInStoryOutput(this->iolabel->Text);
+			this->_updateNumberInStoryOutput(this->iolabel->Text);
 		}
 	private: 
 		System::Void plus_Click(System::Object^ sender, System::EventArgs^ e) 
