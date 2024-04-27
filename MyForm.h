@@ -532,6 +532,7 @@ namespace winformstest {
 			}
 
 			this->iolabel->Text = System::Convert::ToString(resultValue);
+			this->storyOutput->Text += " =";
 			this->hasToRepeat = true;
 			this->_userAction = ' ';
 		}
