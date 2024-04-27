@@ -401,15 +401,8 @@ namespace winformstest {
 	private:
 		System::Void _updateStoryOutputLabel()
 		{
-			if (this->firstNumber && !this->secondNumber)
-			{
-				this->storyOutput->Text = firstNumber;
-			}
-
-			if (this->_userAction != ' ')
-			{
-				this->storyOutput->Text += " " + this->secondNumber;
-			}
+			String^ actionString = gcnew String(this->_userAction, 1);
+			this->storyOutput->Text = this->firstNumber + " " + actionString + " " + this->secondNumber;
 		}
 	private:
 		System::Void _updateNumberInStoryOutput(System::String^ number)
@@ -423,22 +416,6 @@ namespace winformstest {
 			{
 				this->secondNumber = number;
 				this->_updateStoryOutputLabel();
-			}
-		}
-	private:
-		System::Void _updateActionInStoryOutput()
-		{
-			auto action = Convert::ToString(this->_userAction);
-			auto length = this->storyOutput->Text->Length;
-
-			if (isalpha(this->storyOutput->Text[length - 1] && length != 0))
-			{
-				this->storyOutput->Text->Remove(length - 1);
-				this->storyOutput->Text += action;
-			}
-			else
-			{
-				this->storyOutput->Text += " " + action;
 			}
 		}
 	private:
@@ -504,7 +481,7 @@ namespace winformstest {
 			this->_userAction = action;
 			this->iolabel->Text = "0";
 
-			this->_updateActionInStoryOutput();
+			this->_updateStoryOutputLabel();
 		}
 	private:
 		System::Void getValue_Click(System::Object^ sender, System::EventArgs^ e)
@@ -556,6 +533,8 @@ namespace winformstest {
 			{
 				this->iolabel->Text = "-" + this->iolabel->Text;
 			}
+
+			this->_updateNumberInStoryOutput(this->iolabel->Text);
 		}
 	private:
 		System::Void point_Click(System::Object^ sender, System::EventArgs^ e)
@@ -578,6 +557,8 @@ namespace winformstest {
 			{
 				this->iolabel->Text = System::Convert::ToString(gotBasicPercentOfValue);
 			}
+
+			this->_updateNumberInStoryOutput(this->iolabel->Text);
 		}
 	};
 }
