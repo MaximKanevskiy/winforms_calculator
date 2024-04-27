@@ -421,7 +421,7 @@ namespace winformstest {
 	private:
 		System::Void _clearStoryOutput()
 		{
-			this->storyOutput->Text->Remove(0);
+			this->storyOutput->Text = "";
 			this->firstNumber = "";
 			this->secondNumber = "";
 		}
@@ -472,22 +472,25 @@ namespace winformstest {
 	private:
 		System::Void _takeAction(char action)
 		{
-			if (this->iolabel->Text->Contains(","))
+			if (this->_userAction == ' ')
 			{
-				this->iolabel->Text += "0";
+				this->iolabel->Text += this->iolabel->Text->Contains(",") ? "0" : "";
+
+				this->_firstNumber = Convert::ToDouble(this->iolabel->Text);
+				this->_userAction = action;
+				this->iolabel->Text = "0";
 			}
-
-			this->_firstNumber = System::Convert::ToDouble(this->iolabel->Text);
-			this->_userAction = action;
-			this->iolabel->Text = "0";
-
-			this->_updateStoryOutputLabel();
+			else
+			{
+				this->_userAction = action;
+				this->_updateStoryOutputLabel();
+			}
 		}
 	private:
 		System::Void getValue_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			double resultValue{};
-			double secondNumber = System::Convert::ToDouble(this->iolabel->Text);
+			double secondNumber = Convert::ToDouble(this->iolabel->Text);
 
 			switch (this->_userAction)
 			{
@@ -507,8 +510,17 @@ namespace winformstest {
 				resultValue = secondNumber;
 			}
 
-			this->iolabel->Text = System::Convert::ToString(resultValue);
-			this->storyOutput->Text += " =";
+			this->iolabel->Text = Convert::ToString(resultValue);
+
+			if (!this->storyOutput->Text->Contains("="))
+			{
+				this->storyOutput->Text += " =";
+			}
+			else
+			{
+				this->storyOutput->Text = this->iolabel->Text + " =";
+			}
+
 			this->hasToRepeat = true;
 			this->_userAction = ' ';
 		}
@@ -516,7 +528,7 @@ namespace winformstest {
 		System::Void clearButton_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			this->iolabel->Text = "0";
-			this->storyOutput->Text = "";
+			this->_clearStoryOutput();
 			this->hasToRepeat = false;
 			this->_firstNumber = 0;
 		}
@@ -539,23 +551,21 @@ namespace winformstest {
 	private:
 		System::Void point_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			if (!this->iolabel->Text->Contains(","))
-			{
-				this->iolabel->Text += ",";
-			}
+			this->iolabel->Text += this->iolabel->Text->Contains(",") ? "" : ",";
+			this->hasToRepeat = false;
 		}
 	private:
 		System::Void getPercentOf_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			double gotBasicPercentOfValue = System::Convert::ToDouble(this->iolabel->Text) / 100;
+			double gotBasicPercentOfValue = Convert::ToDouble(this->iolabel->Text) / 100;
 
 			if (this->_firstNumber)
 			{
-				this->iolabel->Text = System::Convert::ToString(gotBasicPercentOfValue * this->_firstNumber);
+				this->iolabel->Text = Convert::ToString(gotBasicPercentOfValue * this->_firstNumber);
 			}
 			else
 			{
-				this->iolabel->Text = System::Convert::ToString(gotBasicPercentOfValue);
+				this->iolabel->Text = Convert::ToString(gotBasicPercentOfValue);
 			}
 
 			this->_updateNumberInStoryOutput(this->iolabel->Text);
