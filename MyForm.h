@@ -554,6 +554,12 @@ namespace winformstest {
 				this->iolabel->Text = "-" + this->iolabel->Text;
 			}
 
+			if (hasToRepeat) 
+			{
+				hasToRepeat = false;
+				this->_clearStoryOutput();
+			}
+
 			this->_updateNumberInStoryOutput(this->iolabel->Text);
 		}
 	private:
