@@ -57,8 +57,8 @@ namespace winformstest {
 	private: double _firstNumber;
 	private: char _userAction = ' ';
 	private: bool hasToRepeat = false;
-	private: System::String^ firstNumber;
-	private: System::String^ secondNumber;
+	private: System::String^ firstNumber = "";
+	private: System::String^ secondNumber = "";
 	private: System::Windows::Forms::Label^ storyOutput;
 		   /// <summary>
 		/// Обязательная переменная конструктора.
@@ -476,14 +476,22 @@ namespace winformstest {
 			{
 				this->iolabel->Text += this->iolabel->Text->Contains(",") ? "0" : "";
 
+				if (this->secondNumber != "")
+				{
+					this->_clearStoryOutput();
+					this->_updateNumberInStoryOutput(this->iolabel->Text);
+					this->hasToRepeat = false;
+				}
+
 				this->_firstNumber = Convert::ToDouble(this->iolabel->Text);
 				this->_userAction = action;
+				this->_updateStoryOutputLabel();
 				this->iolabel->Text = "0";
 			}
 			else
 			{
 				this->_userAction = action;
-				this->_updateStoryOutputLabel();
+				this->_updateNumberInStoryOutput(this->iolabel->Text);
 			}
 		}
 	private:
